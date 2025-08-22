@@ -1,18 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getProductById } from "../../api/products/data.js";
 
 async function getProduct(id) {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/products/${id}`, {
-      cache: 'no-store' // Ensure fresh data
-    });
-    
-    if (!response.ok) {
-      return null;
-    }
-    
-    return await response.json();
+    // Directly use the data function instead of making HTTP request
+    const product = getProductById(id);
+    return product;
   } catch (error) {
     console.error('Error fetching product:', error);
     return null;
