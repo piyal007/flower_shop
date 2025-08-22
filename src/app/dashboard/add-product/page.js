@@ -95,13 +95,13 @@ export default function AddProductPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-100 py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-pink-100">
             {/* Header */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6">
+            <div className="bg-gradient-to-r from-[#ed2353] via-[#f73d64] to-[#ff5675] px-8 py-6">
               <h1 className="text-3xl font-bold text-white">Add New Product</h1>
-              <p className="text-indigo-100 mt-2">Fill in the details below to add a new product to your inventory</p>
+              <p className="text-pink-100 mt-2">Fill in the details below to add a new product to your inventory</p>
             </div>
 
             {/* Form */}
@@ -111,7 +111,7 @@ export default function AddProductPage() {
                   {/* Left Column */}
                   <div className="space-y-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label htmlFor="name" className="block text-sm font-semibold text-gray-800 mb-2">
                         Product Name *
                       </label>
                       <input
@@ -121,13 +121,13 @@ export default function AddProductPage() {
                         required
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ed2353] focus:border-[#ed2353] transition-colors"
                         placeholder="Enter product name"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="category" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label htmlFor="category" className="block text-sm font-semibold text-gray-800 mb-2">
                         Category
                       </label>
                       <select
@@ -135,7 +135,7 @@ export default function AddProductPage() {
                         name="category"
                         value={formData.category}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ed2353] focus:border-[#ed2353] transition-colors"
                       >
                         <option value="">Select a category</option>
                         <option value="flowers">Flowers</option>
@@ -148,7 +148,7 @@ export default function AddProductPage() {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label htmlFor="price" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label htmlFor="price" className="block text-sm font-semibold text-gray-800 mb-2">
                           Price ($) *
                         </label>
                         <input
@@ -160,13 +160,13 @@ export default function AddProductPage() {
                           step="0.01"
                           value={formData.price}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ed2353] focus:border-[#ed2353] transition-colors"
                           placeholder="0.00"
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="stock" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label htmlFor="stock" className="block text-sm font-semibold text-gray-800 mb-2">
                           Stock Quantity
                         </label>
                         <input
@@ -176,7 +176,7 @@ export default function AddProductPage() {
                           min="0"
                           value={formData.stock}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ed2353] focus:border-[#ed2353] transition-colors"
                           placeholder="0"
                         />
                       </div>
@@ -186,7 +186,7 @@ export default function AddProductPage() {
                   {/* Right Column */}
                   <div className="space-y-6">
                     <div>
-                      <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-1">
+                      <label htmlFor="description" className="block text-sm font-semibold text-gray-800 mb-1">
                         Description *
                       </label>
                       <textarea
@@ -196,13 +196,13 @@ export default function AddProductPage() {
                         rows={5}
                         value={formData.description}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors resize-none"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ed2353] focus:border-[#ed2353] transition-colors resize-none"
                         placeholder="Enter detailed product description..."
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="image" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label htmlFor="image" className="block text-sm font-semibold text-gray-800 mb-2">
                         Image URL
                       </label>
                       <input
@@ -211,7 +211,7 @@ export default function AddProductPage() {
                         name="image"
                         value={formData.image}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ed2353] focus:border-[#ed2353] transition-colors"
                         placeholder="https://example.com/image.jpg"
                       />
                       {formData.image && (
@@ -219,7 +219,7 @@ export default function AddProductPage() {
                           <img
                             src={formData.image}
                             alt="Preview"
-                            className="w-32 h-32 object-cover rounded-lg border border-gray-200"
+                            className="w-32 h-32 object-cover rounded-lg border-2 border-pink-200 shadow-md"
                             onError={(e) => {
                               e.target.style.display = 'none';
                             }}
@@ -236,14 +236,14 @@ export default function AddProductPage() {
                     <button
                       type="button"
                       onClick={() => router.push("/dashboard")}
-                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors cursor-pointer"
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#ed2353] focus:ring-offset-2 transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-semibold cursor-pointer"
+                      className="px-8 py-3 bg-gradient-to-r from-[#ed2353] via-[#f73d64] to-[#ff5675] text-white rounded-lg hover:from-[#d91e47] hover:to-[#f73d64] focus:outline-none focus:ring-2 focus:ring-[#ed2353] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-semibold cursor-pointer shadow-lg hover:shadow-xl"
                     >
                       {isLoading ? (
                         <div className="flex items-center">
