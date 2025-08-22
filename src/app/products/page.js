@@ -98,23 +98,23 @@ export default function ProductsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {items.map((p) => (
-          <div key={p.id} className="rounded-lg border overflow-hidden bg-white shadow-sm flex flex-col h-full">
-            <div className="relative aspect-[3/4]">
+          <div key={p.id} className="rounded-lg border overflow-hidden bg-white shadow-sm flex flex-col">
+            <div className="relative aspect-[1/1] bg-gray-50">
               <Image
                 src={p.image}
                 alt={p.name}
                 fill
                 sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
-                className="object-cover"
+                className="object-contain"
               />
             </div>
-            <div className="p-4 flex flex-col flex-grow">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">{p.name}</h3>
+            <div className="p-4 flex flex-col min-h-[180px]">
+              <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-1">{p.name}</h3>
               <p className="text-sm text-gray-600 leading-5 mb-3 line-clamp-2 flex-grow">{p.description}</p>
-              <div className="text-xl font-bold text-gray-900 mb-3">${p.price}</div>
+              <div className="text-lg font-bold text-gray-900 mb-3">${p.price}</div>
               <Link 
                 href={`/products/${p.id}`}
-                className="block w-full bg-primary text-primary-foreground text-center py-3 px-4 rounded-md font-medium hover:bg-primary/90 transition-colors mt-auto"
+                className="block w-full bg-primary text-primary-foreground text-center py-2.5 px-4 rounded-md font-medium hover:bg-primary/90 transition-colors mt-auto"
               >
                 Details
               </Link>
