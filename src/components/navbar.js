@@ -42,7 +42,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white/80 border-b">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4">
         <div className="h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" className={cn("text-2xl", "[font-family:var(--font-great-vibes)]")} onClick={() => setOpen(false)}>FlowerShop</Link>

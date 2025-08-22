@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Pagination from "@/components/ui/pagination.js";
 
 
@@ -13,20 +13,35 @@ export default function ProductsPage() {
 
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch products from API
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/products');
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data);
+        } else {
+          console.error('Failed to fetch products');
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
-    async function fetchData() {
-      const all = Array.from({ length: 24 }).map((_, i) => ({
-        id: String(i + 1),
-        name: `Bouquet ${i + 1}`,
-        description: "A lovely hand-picked bouquet perfect for any occasion.",
-        price: (29 + (i % 8) * 5).toFixed(2),
-        category: i % 2 === 0 ? "tulip" : "rose",
-        image: "/flowers-product-1-opt-380x513.jpg",
-      }));
+    function filterProducts() {
       const q = query.toLowerCase();
-      const filtered = all.filter((p) =>
-        (category === "all" || p.category === category) &&
+      const filtered = products.filter((p) =>
+        (category === "all" || p.category.toLowerCase() === category.toLowerCase()) &&
         (p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q))
       );
       const start = (page - 1) * perPage;
@@ -34,8 +49,8 @@ export default function ProductsPage() {
       setItems(filtered.slice(start, end));
       setTotal(filtered.length);
     }
-    fetchData();
-  }, [query, category, page]);
+    filterProducts();
+  }, [query, category, page, products]);
 
   const totalPages = Math.max(1, Math.ceil(total / perPage));
 
@@ -46,56 +61,71 @@ export default function ProductsPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
 
-      <div className="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-4 sm:justify-between mb-6">
-        <div className="flex-1">
-          <label className="block text-sm mb-1">Search</label>
+      <div className="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-6 mb-6">
+        <div className="flex-1 sm:flex-[2]">
+          <label className="block text-sm font-medium mb-2 text-gray-700">Search Products</label>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            placeholder="Search products..."
+            className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ed2353] focus-visible:border-[#ed2353] transition-colors"
+            placeholder="Search by name or description..."
           />
         </div>
-        <div>
-          <label className="block text-sm mb-1">Filter</label>
+        <div className="sm:flex-1 sm:min-w-[200px]">
+          <label className="block text-sm font-medium mb-2 text-gray-700">Filter by Category</label>
           <select
             value={category}
             onChange={(e) => { setCategory(e.target.value); setPage(1); }}
-            className="rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ed2353] focus-visible:border-[#ed2353] transition-colors cursor-pointer"
           >
-            <option value="all">All</option>
-            <option value="tulip">Tulip</option>
-            <option value="rose">Rose</option>
+            <option value="all">All Categories</option>
+            <option value="rose bouquets">Rose Bouquets</option>
+            <option value="tulip bouquets">Tulip Bouquets</option>
+            <option value="lily arrangements">Lily Arrangements</option>
+            <option value="sunflower bouquets">Sunflower Bouquets</option>
+            <option value="peony arrangements">Peony Arrangements</option>
+            <option value="mixed bouquets">Mixed Bouquets</option>
+            <option value="herb bouquets">Herb Bouquets</option>
+            <option value="orchid arrangements">Orchid Arrangements</option>
           </select>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {items.map((p) => (
-          <div key={p.id} className="rounded-lg border overflow-hidden">
+      {loading ? (
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ed2353]"></div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {items.map((p) => (
+          <div key={p.id} className="rounded-lg border overflow-hidden bg-white shadow-sm flex flex-col h-full">
             <div className="relative aspect-[3/4]">
               <Image
                 src={p.image}
                 alt={p.name}
                 fill
-                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
                 className="object-cover"
               />
             </div>
-            <div className="p-4 space-y-1">
-              <h3 className="text-base font-semibold">{p.name}</h3>
-              <p className="text-sm text-foreground/70">{p.description}</p>
-              <div className="flex items-center justify-between pt-2">
-                <span className="text-sm font-medium">${p.price}</span>
-                <Link className="text-sm text-primary hover:underline" href={`/products/${p.id}`}>Details</Link>
-              </div>
+            <div className="p-4 flex flex-col flex-grow">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">{p.name}</h3>
+              <p className="text-sm text-gray-600 leading-5 mb-3 line-clamp-2 flex-grow">{p.description}</p>
+              <div className="text-xl font-bold text-gray-900 mb-3">${p.price}</div>
+              <Link 
+                href={`/products/${p.id}`}
+                className="block w-full bg-primary text-primary-foreground text-center py-3 px-4 rounded-md font-medium hover:bg-primary/90 transition-colors mt-auto"
+              >
+                Details
+              </Link>
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       <div className="mt-6 flex justify-end">
-        <Pagination page={page} totalPages={totalPages} />
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
     </div>
   );

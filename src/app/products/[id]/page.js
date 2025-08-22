@@ -1,26 +1,43 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PRODUCTS } from "@/lib/mock-products";
 import { notFound } from "next/navigation";
 
-export default function ProductDetail({ params }) {
+async function getProduct(id) {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/products/${id}`, {
+      cache: 'no-store' // Ensure fresh data
+    });
+    
+    if (!response.ok) {
+      return null;
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    return null;
+  }
+}
+
+export default async function ProductDetail({ params }) {
   const { id } = params;
   
-  // Find the specific product by ID
-  const product = PRODUCTS.find(p => p.id === id);
+  // Fetch the specific product by ID
+  const product = await getProduct(id);
   
   // If product not found, show 404
   if (!product) {
     notFound();
   }
 
-  const details = [
-    "Hand-tied arrangement",
-    "Includes gift card", 
-    "Same-day delivery available",
-    "Sustainably sourced flowers",
-    `Category: ${product.category.charAt(0).toUpperCase() + product.category.slice(1)}`,
-  ];
+  const details = product.features && product.features.length > 0 
+    ? product.features 
+    : [
+        "High quality product",
+        "Fast shipping available",
+        "Customer satisfaction guaranteed",
+        `Category: ${product.category.charAt(0).toUpperCase() + product.category.slice(1)}`,
+      ];
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10">
@@ -32,19 +49,21 @@ export default function ProductDetail({ params }) {
           <div className="text-sm text-foreground/60">SKU: FS-{id}</div>
           <h1 className="mt-1 text-3xl font-semibold">{product.name}</h1>
           
-          {/* Rating and Reviews */}
-          <div className="mt-2 flex items-center gap-2">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <span key={i} className={`text-sm ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}`}>
-                  ★
-                </span>
-              ))}
+          {/* Rating and Reviews - only show if available */}
+          {product.rating && (
+            <div className="mt-2 flex items-center gap-2">
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className={`text-sm ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}`}>
+                    ★
+                  </span>
+                ))}
+              </div>
+              <span className="text-sm text-foreground/60">
+                {product.rating} ({product.reviews || 0} reviews)
+              </span>
             </div>
-            <span className="text-sm text-foreground/60">
-              {product.rating} ({product.reviews} reviews)
-            </span>
-          </div>
+          )}
 
           <div className="mt-3 text-2xl font-bold text-primary">${product.price}</div>
           
@@ -59,7 +78,7 @@ export default function ProductDetail({ params }) {
             </span>
           </div>
 
-          <p className="mt-4 text-foreground/80">{product.longDescription}</p>
+          <p className="mt-4 text-foreground/80">{product.longDescription || product.description}</p>
           
           <div className="mt-4">
             <h3 className="text-sm font-semibold mb-2">Features:</h3>

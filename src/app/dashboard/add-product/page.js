@@ -52,20 +52,28 @@ export default function AddProductPage() {
       // Show loading toast
       const loadingToast = toast.loading("Adding product...");
 
-      // In a real app, you would send this to your API
-      // For now, we'll simulate saving to localStorage
-      const products = JSON.parse(localStorage.getItem("products") || "[]");
-      const newProduct = {
-        id: Date.now().toString(),
-        ...formData,
-        price: parseFloat(formData.price),
-        stock: parseInt(formData.stock) || 0,
-        createdBy: user.email,
-        createdAt: new Date().toISOString(),
-      };
+      // Send product data to API
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          description: formData.description,
+          price: parseFloat(formData.price),
+          category: formData.category || 'General',
+          image: formData.image || '/images/default-product.jpg',
+          features: [] // You can extend this later
+        }),
+      });
 
-      products.push(newProduct);
-      localStorage.setItem("products", JSON.stringify(products));
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to add product');
+      }
+
+      const newProduct = await response.json();
 
       // Dismiss loading toast and show success
       toast.dismiss(loadingToast);
@@ -81,13 +89,13 @@ export default function AddProductPage() {
         image: "",
       });
 
-      // Optional: Redirect to dashboard after a delay
+      // Optional: Redirect to products page after a delay
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/products");
       }, 1500);
 
     } catch (error) {
-      toast.error("Error adding product. Please try again.");
+      toast.error(error.message || "Error adding product. Please try again.");
       console.error("Error adding product:", error);
     } finally {
       setIsLoading(false);
@@ -139,11 +147,14 @@ export default function AddProductPage() {
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ed2353] focus:border-[#ed2353] transition-colors"
                       >
                         <option value="">Select a category</option>
-                        <option value="flowers">Flowers</option>
-                        <option value="bouquets">Bouquets</option>
-                        <option value="plants">Plants</option>
-                        <option value="accessories">Accessories</option>
-                        <option value="gifts">Gifts</option>
+                        <option value="Rose Bouquets">Rose Bouquets</option>
+                        <option value="Tulip Bouquets">Tulip Bouquets</option>
+                        <option value="Lily Arrangements">Lily Arrangements</option>
+                        <option value="Sunflower Bouquets">Sunflower Bouquets</option>
+                        <option value="Peony Arrangements">Peony Arrangements</option>
+                        <option value="Mixed Bouquets">Mixed Bouquets</option>
+                        <option value="Herb Bouquets">Herb Bouquets</option>
+                        <option value="Orchid Arrangements">Orchid Arrangements</option>
                       </select>
                     </div>
 
