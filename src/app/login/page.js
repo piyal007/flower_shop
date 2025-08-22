@@ -14,14 +14,14 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [displayName, setDisplayName] = useState("");
 
-  const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { signIn, signUp, signInWithGoogle, user } = useAuth();
   const router = useRouter();
 
-  const showWelcomeAlert = async (user) => {
+  const showWelcomeAlert = async (userInfo) => {
     return new Promise((resolve) => {
       Swal.fire({
         title: 'Welcome!',
-        text: `Hi ${user?.displayName || user?.email || 'there'}! Welcome to FlowerShop.`,
+        text: `Hi ${userInfo?.displayName || userInfo?.email || 'there'}! Welcome to FlowerShop.`,
         icon: 'success',
         confirmButtonText: 'Continue',
         confirmButtonColor: '#ed2353',
@@ -49,18 +49,21 @@ export default function LoginPage() {
     const loadingToast = toast.loading(isSignUp ? "Creating your account..." : "Signing you in...");
 
     try {
-      let user;
+      let result;
       if (isSignUp) {
-        user = await signUp(email, password, displayName);
+        result = await signUp(email, password, displayName);
         toast.dismiss(loadingToast);
       } else {
-        user = await signIn(email, password);
+        result = await signIn(email, password);
         toast.dismiss(loadingToast);
       }
 
+      // Get user from the result
+      const userInfo = result.user;
+
       // Show welcome alert immediately after successful login
-      await showWelcomeAlert(user);
-      
+      await showWelcomeAlert(userInfo);
+
       // Navigate to products page after welcome alert
       router.push("/products");
     } catch (error) {
@@ -78,12 +81,15 @@ export default function LoginPage() {
     const loadingToast = toast.loading("Connecting with Google...");
 
     try {
-      const user = await signInWithGoogle();
+      const result = await signInWithGoogle();
       toast.dismiss(loadingToast);
 
+      // Get user from the result
+      const userInfo = result.user;
+
       // Show welcome alert immediately after successful login
-      await showWelcomeAlert(user);
-      
+      await showWelcomeAlert(userInfo);
+
       // Navigate to products page after welcome alert
       router.push("/products");
     } catch (error) {
