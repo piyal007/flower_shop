@@ -4,12 +4,24 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { user, signOut, loading } = useAuth();
   const isActive = (href) => pathname === href;
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setOpen(false);
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white/80 border-b">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -36,14 +48,37 @@ export default function Navbar() {
             >
               Products
             </Link>
+            {user && (
+              <Link
+                href="/dashboard/add-product"
+                className={cn(
+                  "text-sm font-medium transition-colors",
+                  isActive("/dashboard/add-product") ? "active text-primary" : "text-foreground/80 hover:text-primary"
+                )}
+              >
+                Add Product
+              </Link>
+            )}
           </nav>
           <div className="hidden md:flex items-center gap-3">
-            <Button asChild>
-              <Link href="/auth">Login</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/auth">Register</Link>
-            </Button>
+            {loading ? (
+              <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"></div>
+            ) : user ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  <span className="text-sm font-medium">{user.displayName || user.email}</span>
+                </div>
+                <Button variant="outline" size="sm" onClick={handleSignOut}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Button asChild>
+                <Link href="/login">Login</Link>
+              </Button>
+            )}
           </div>
           <div className="md:hidden">
             <button
@@ -78,13 +113,35 @@ export default function Navbar() {
               >
                 Products
               </Link>
+              {user && (
+                <Link
+                  href="/dashboard/add-product"
+                  className={cn(
+                    "px-1 py-2 text-base font-medium transition-colors",
+                    isActive("/dashboard/add-product") ? "active text-primary" : "text-foreground/80 hover:text-primary"
+                  )}
+                  onClick={() => setOpen(false)}
+                >
+                  Add Product
+                </Link>
+              )}
               <div className="flex items-center gap-2 pt-2">
-                <Button asChild className="flex-1">
-                  <Link href="/auth" onClick={() => setOpen(false)}>Login</Link>
-                </Button>
-                <Button asChild className="flex-1">
-                  <Link href="/auth" onClick={() => setOpen(false)}>Register</Link>
-                </Button>
+                {user ? (
+                  <div className="w-full space-y-2">
+                    <div className="flex items-center gap-2 px-1">
+                      <User className="h-4 w-4" />
+                      <span className="text-sm font-medium">{user.displayName || user.email}</span>
+                    </div>
+                    <Button variant="outline" className="w-full" onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </div>
+                ) : (
+                  <Button asChild className="flex-1">
+                    <Link href="/login" onClick={() => setOpen(false)}>Login</Link>
+                  </Button>
+                )}
               </div>
             </div>
           </div>

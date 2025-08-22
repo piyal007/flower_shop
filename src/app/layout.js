@@ -1,6 +1,7 @@
 import { Inter, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
+import Providers from "@/components/providers";
 import Footer from "@/components/footer";
 
 const inter = Inter({
@@ -22,12 +23,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} ${greatVibes.variable} antialiased`}
-      >
-        <Navbar />
-        {children}
-        <Footer />
+      <body className={`${inter.variable} ${greatVibes.variable} antialiased`}>
+        <Providers>
+          <Navbar />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
