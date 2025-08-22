@@ -2,17 +2,21 @@
 import { useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function AddProductPage() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
+    category: "",
+    stock: "",
     image: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
   const { user } = useAuth();
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,32 +29,65 @@ export default function AddProductPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage("");
+
+    // Validation
+    if (!formData.name.trim()) {
+      toast.error("Product name is required");
+      setIsLoading(false);
+      return;
+    }
+    if (!formData.description.trim()) {
+      toast.error("Product description is required");
+      setIsLoading(false);
+      return;
+    }
+    if (!formData.price || parseFloat(formData.price) <= 0) {
+      toast.error("Please enter a valid price");
+      setIsLoading(false);
+      return;
+    }
 
     try {
+      // Show loading toast
+      const loadingToast = toast.loading("Adding product...");
+
       // In a real app, you would send this to your API
-      // For now, we'll just simulate saving to localStorage
+      // For now, we'll simulate saving to localStorage
       const products = JSON.parse(localStorage.getItem("products") || "[]");
       const newProduct = {
         id: Date.now().toString(),
         ...formData,
         price: parseFloat(formData.price),
+        stock: parseInt(formData.stock) || 0,
         createdBy: user.email,
         createdAt: new Date().toISOString(),
       };
-      
+
       products.push(newProduct);
       localStorage.setItem("products", JSON.stringify(products));
-      
-      setMessage("Product added successfully!");
+
+      // Dismiss loading toast and show success
+      toast.dismiss(loadingToast);
+      toast.success("Product added successfully!");
+
+      // Reset form
       setFormData({
         name: "",
         description: "",
         price: "",
+        category: "",
+        stock: "",
         image: "",
       });
+
+      // Optional: Redirect to dashboard after a delay
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1500);
+
     } catch (error) {
-      setMessage("Error adding product. Please try again.");
+      toast.error("Error adding product. Please try again.");
+      console.error("Error adding product:", error);
     } finally {
       setIsLoading(false);
     }
@@ -58,95 +95,172 @@ export default function AddProductPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">Add New Product</h1>
-            
-            {message && (
-              <div className={`mb-4 p-3 rounded-md text-sm ${
-                message.includes("successfully") 
-                  ? "bg-green-50 text-green-600 border border-green-200" 
-                  : "bg-red-50 text-red-600 border border-red-200"
-              }`}>
-                {message}
-              </div>
-            )}
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6">
+              <h1 className="text-3xl font-bold text-white">Add New Product</h1>
+              <p className="text-indigo-100 mt-2">Fill in the details below to add a new product to your inventory</p>
+            </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Product Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter product name"
-                />
-              </div>
+            {/* Form */}
+            <div className="p-8">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Left Column */}
+                  <div className="space-y-6">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                        Product Name *
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                        placeholder="Enter product name"
+                      />
+                    </div>
 
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  required
-                  rows={3}
-                  value={formData.description}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter product description"
-                />
-              </div>
+                    <div>
+                      <label htmlFor="category" className="block text-sm font-semibold text-gray-700 mb-2">
+                        Category
+                      </label>
+                      <select
+                        id="category"
+                        name="category"
+                        value={formData.category}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                      >
+                        <option value="">Select a category</option>
+                        <option value="flowers">Flowers</option>
+                        <option value="bouquets">Bouquets</option>
+                        <option value="plants">Plants</option>
+                        <option value="accessories">Accessories</option>
+                        <option value="gifts">Gifts</option>
+                      </select>
+                    </div>
 
-              <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                  Price ($)
-                </label>
-                <input
-                  type="number"
-                  id="price"
-                  name="price"
-                  required
-                  min="0"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="0.00"
-                />
-              </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="price" className="block text-sm font-semibold text-gray-700 mb-2">
+                          Price ($) *
+                        </label>
+                        <input
+                          type="number"
+                          id="price"
+                          name="price"
+                          required
+                          min="0"
+                          step="0.01"
+                          value={formData.price}
+                          onChange={handleChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          placeholder="0.00"
+                        />
+                      </div>
 
-              <div>
-                <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
-                  Image URL
-                </label>
-                <input
-                  type="url"
-                  id="image"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
+                      <div>
+                        <label htmlFor="stock" className="block text-sm font-semibold text-gray-700 mb-2">
+                          Stock Quantity
+                        </label>
+                        <input
+                          type="number"
+                          id="stock"
+                          name="stock"
+                          min="0"
+                          value={formData.stock}
+                          onChange={handleChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {isLoading ? "Adding Product..." : "Add Product"}
-              </button>
-            </form>
+                  {/* Right Column */}
+                  <div className="space-y-6">
+                    <div>
+                      <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-1">
+                        Description *
+                      </label>
+                      <textarea
+                        id="description"
+                        name="description"
+                        required
+                        rows={5}
+                        value={formData.description}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors resize-none"
+                        placeholder="Enter detailed product description..."
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="image" className="block text-sm font-semibold text-gray-700 mb-2">
+                        Image URL
+                      </label>
+                      <input
+                        type="url"
+                        id="image"
+                        name="image"
+                        value={formData.image}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                        placeholder="https://example.com/image.jpg"
+                      />
+                      {formData.image && (
+                        <div className="mt-3">
+                          <img
+                            src={formData.image}
+                            alt="Preview"
+                            className="w-32 h-32 object-cover rounded-lg border border-gray-200"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex justify-end pt-6 border-t border-gray-200">
+                  <div className="flex space-x-4">
+                    <button
+                      type="button"
+                      onClick={() => router.push("/dashboard")}
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-semibold cursor-pointer"
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center">
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Adding Product...
+                        </div>
+                      ) : (
+                        "Add Product"
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
