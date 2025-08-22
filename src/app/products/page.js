@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import Pagination from "@/components/ui/pagination.js";
-import WelcomeAlert from "@/components/WelcomeAlert";
+
 
 export default function ProductsPage() {
   const [query, setQuery] = useState("");
@@ -45,7 +45,7 @@ export default function ProductsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-      <WelcomeAlert />
+
       <div className="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-4 sm:justify-between mb-6">
         <div className="flex-1">
           <label className="block text-sm mb-1">Search</label>

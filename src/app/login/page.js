@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import Swal from "sweetalert2";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,6 +17,30 @@ export default function LoginPage() {
   const { signIn, signUp, signInWithGoogle } = useAuth();
   const router = useRouter();
 
+  const showWelcomeAlert = async (user) => {
+    return new Promise((resolve) => {
+      Swal.fire({
+        title: 'Welcome!',
+        text: `Hi ${user?.displayName || user?.email || 'there'}! Welcome to FlowerShop.`,
+        icon: 'success',
+        confirmButtonText: 'Continue',
+        confirmButtonColor: '#ed2353',
+        timer: 2500,
+        timerProgressBar: true,
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutUp'
+        },
+        allowOutsideClick: false,
+        allowEscapeKey: false
+      }).then(() => {
+        resolve();
+      });
+    });
+  };
+
   const handleEmailAuth = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -24,17 +49,19 @@ export default function LoginPage() {
     const loadingToast = toast.loading(isSignUp ? "Creating your account..." : "Signing you in...");
 
     try {
+      let user;
       if (isSignUp) {
-        await signUp(email, password, displayName);
+        user = await signUp(email, password, displayName);
         toast.dismiss(loadingToast);
       } else {
-        await signIn(email, password);
+        user = await signIn(email, password);
         toast.dismiss(loadingToast);
       }
 
-      // Clear welcome flag so user sees welcome message on products page
-      sessionStorage.removeItem('welcomeShown');
-
+      // Show welcome alert immediately after successful login
+      await showWelcomeAlert(user);
+      
+      // Navigate to products page after welcome alert
       router.push("/products");
     } catch (error) {
       toast.error(error.message || "Something went wrong. Please try again.", { id: loadingToast });
@@ -51,12 +78,13 @@ export default function LoginPage() {
     const loadingToast = toast.loading("Connecting with Google...");
 
     try {
-      await signInWithGoogle();
+      const user = await signInWithGoogle();
       toast.dismiss(loadingToast);
 
-      // Clear welcome flag so user sees welcome message on products page
-      sessionStorage.removeItem('welcomeShown');
-
+      // Show welcome alert immediately after successful login
+      await showWelcomeAlert(user);
+      
+      // Navigate to products page after welcome alert
       router.push("/products");
     } catch (error) {
       toast.error(error.message || "Google sign-in failed. Please try again.", { id: loadingToast });
