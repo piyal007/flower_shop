@@ -9,6 +9,7 @@ import {
   updateProfile
 } from "firebase/auth";
 import { auth, googleProvider } from "@/firebase/firebase.config";
+import Swal from "sweetalert2";
 
 const AuthContext = createContext({});
 
@@ -64,11 +65,58 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Sign Out
+  // Sign Out with confirmation
   const signOut = async () => {
     try {
-      return await firebaseSignOut(auth);
+      const result = await Swal.fire({
+        title: 'Sign Out?',
+        text: 'Are you sure you want to sign out of your account?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#EF4444',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Yes, Sign Out',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutUp'
+        }
+      });
+
+      if (result.isConfirmed) {
+        await firebaseSignOut(auth);
+        
+        // Show success message after sign out
+        Swal.fire({
+          title: 'Signed Out Successfully!',
+          text: 'You have been logged out. See you again soon!',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#4F46E5',
+          timer: 3000,
+          timerProgressBar: true,
+          showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+          },
+          hideClass: {
+            popup: 'animate__animated animate__fadeOutUp'
+          }
+        });
+        
+        return true;
+      }
+      return false;
     } catch (error) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong while signing out. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#EF4444'
+      });
       throw error;
     }
   };
