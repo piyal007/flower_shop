@@ -45,7 +45,27 @@ export default function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4">
         <div className="h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className={cn("text-2xl", "[font-family:var(--font-great-vibes)]")} onClick={() => setOpen(false)}>FlowerShop</Link>
+            <Link href="/" className="flex items-center gap-2 group" onClick={() => setOpen(false)}>
+              {/* Flower Icon */}
+              <div className="relative">
+                <svg 
+                  className="w-8 h-8 text-primary group-hover:text-primary/80 transition-colors" 
+                  fill="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9C21 7.9 20.1 7 19 7C17.9 7 17 7.9 17 9C17 10.1 17.9 11 19 11C20.1 11 21 10.1 21 9ZM7 9C7 7.9 6.1 7 5 7C3.9 7 3 7.9 3 9C3 10.1 3.9 11 5 11C6.1 11 7 10.1 7 9ZM12 10C13.1 10 14 10.9 14 12C14 13.1 13.1 14 12 14C10.9 14 10 13.1 10 12C10 10.9 10.9 10 12 10ZM19 13C20.1 13 21 13.9 21 15C21 16.1 20.1 17 19 17C17.9 17 17 16.1 17 15C17 13.9 17.9 13 19 13ZM5 13C6.1 13 7 13.9 7 15C7 16.1 6.1 17 5 17C3.9 17 3 16.1 3 15C3 13.9 3.9 13 5 13ZM12 18C13.1 18 14 18.9 14 20C14 21.1 13.1 22 12 22C10.9 22 10 21.1 10 20C10 18.9 10.9 18 12 18Z"/>
+                </svg>
+                {/* Small decorative dot */}
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary/60 rounded-full"></div>
+              </div>
+              {/* Logo Text */}
+              <span className={cn(
+                "text-2xl font-semibold text-primary group-hover:text-primary/80 transition-colors",
+                "[font-family:var(--font-great-vibes)]"
+              )}>
+                FlowerShop
+              </span>
+            </Link>
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <Link
