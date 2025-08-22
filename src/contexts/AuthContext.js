@@ -1,8 +1,8 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-import { 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword, 
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
   signOut as firebaseSignOut,
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
 
       if (result.isConfirmed) {
         await firebaseSignOut(auth);
-        
+
         // Show success message after sign out
         Swal.fire({
           title: 'Signed Out Successfully!',
@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }) => {
           icon: 'success',
           confirmButtonText: 'OK',
           confirmButtonColor: '#4F46E5',
-          timer: 3000,
+          timer: 1000,
           timerProgressBar: true,
           showClass: {
             popup: 'animate__animated animate__fadeInDown'
@@ -105,7 +105,7 @@ export const AuthProvider = ({ children }) => {
             popup: 'animate__animated animate__fadeOutUp'
           }
         });
-        
+
         return true;
       }
       return false;

@@ -3,24 +3,42 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Menu, X, User, LogOut, Settings, ChevronDown } from "lucide-react";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const pathname = usePathname();
   const { user, signOut, loading } = useAuth();
   const isActive = (href) => pathname === href;
+  const dropdownRef = useRef(null);
 
   const handleSignOut = async () => {
     try {
       await signOut();
       setOpen(false);
+      setProfileDropdownOpen(false);
     } catch (error) {
       console.error("Sign out error:", error);
     }
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white/80 border-b">
@@ -64,15 +82,103 @@ export default function Navbar() {
             {loading ? (
               <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"></div>
             ) : user ? (
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span className="text-sm font-medium">{user.displayName || user.email}</span>
-                </div>
-                <Button variant="outline" size="sm" onClick={handleSignOut}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
-                </Button>
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                  className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-50 transition-all duration-200 group cursor-pointer"
+                >
+                  <div className="relative">
+                    {/* Profile Picture with Ring Border */}
+                    <div className="w-9 h-9 rounded-full p-0.5 bg-gradient-to-r from-primary via-primary/80 to-primary/60 shadow-sm">
+                      <div className="w-full h-full rounded-full overflow-hidden bg-white p-0.5">
+                        {user.photoURL ? (
+                          <Image
+                            src={user.photoURL}
+                            alt={user.displayName || user.email}
+                            width={32}
+                            height={32}
+                            className="w-full h-full object-cover rounded-full"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center rounded-full">
+                            <span className="text-white text-sm font-semibold">
+                              {(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Online Indicator */}
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full shadow-sm"></div>
+                  </div>
+                  
+                  {/* Dropdown Indicator */}
+                  <ChevronDown className={`h-3 w-3 text-gray-500 transition-transform duration-200 ${profileDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Profile Dropdown */}
+                {profileDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    {/* User Info */}
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          {/* Profile Picture with Ring Border */}
+                          <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-r from-primary via-primary/80 to-primary/60">
+                            <div className="w-full h-full rounded-full overflow-hidden bg-white p-0.5">
+                              {user.photoURL ? (
+                                <Image
+                                  src={user.photoURL}
+                                  alt={user.displayName || user.email}
+                                  width={44}
+                                  height={44}
+                                  className="w-full h-full object-cover rounded-full"
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center rounded-full">
+                                  <span className="text-white font-semibold">
+                                    {(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {/* Online Indicator */}
+                          <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">
+                            {user.displayName || 'User'}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Menu Items */}
+                    <div className="py-1">
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <Settings className="h-4 w-4" />
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <Button asChild>
@@ -114,23 +220,62 @@ export default function Navbar() {
                 Products
               </Link>
               {user && (
-                <Link
-                  href="/dashboard/add-product"
-                  className={cn(
-                    "px-1 py-2 text-base font-medium transition-colors",
-                    isActive("/dashboard/add-product") ? "active text-primary" : "text-foreground/80 hover:text-primary"
-                  )}
-                  onClick={() => setOpen(false)}
-                >
-                  Add Product
-                </Link>
+                <>
+                  <Link
+                    href="/dashboard"
+                    className={cn(
+                      "px-1 py-2 text-base font-medium transition-colors",
+                      isActive("/dashboard") ? "active text-primary" : "text-foreground/80 hover:text-primary"
+                    )}
+                    onClick={() => setOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/dashboard/add-product"
+                    className={cn(
+                      "px-1 py-2 text-base font-medium transition-colors",
+                      isActive("/dashboard/add-product") ? "active text-primary" : "text-foreground/80 hover:text-primary"
+                    )}
+                    onClick={() => setOpen(false)}
+                  >
+                    Add Product
+                  </Link>
+                </>
               )}
               <div className="flex items-center gap-2 pt-2">
                 {user ? (
                   <div className="w-full space-y-2">
-                    <div className="flex items-center gap-2 px-1">
-                      <User className="h-4 w-4" />
-                      <span className="text-sm font-medium">{user.displayName || user.email}</span>
+                    <div className="flex items-center gap-3 px-1 py-2">
+                      <div className="relative">
+                        {/* Profile Picture with Ring Border */}
+                        <div className="w-10 h-10 rounded-full p-0.5 bg-gradient-to-r from-primary via-primary/80 to-primary/60">
+                          <div className="w-full h-full rounded-full overflow-hidden bg-white p-0.5">
+                            {user.photoURL ? (
+                              <Image
+                                src={user.photoURL}
+                                alt={user.displayName || user.email}
+                                width={36}
+                                height={36}
+                                className="w-full h-full object-cover rounded-full"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center rounded-full">
+                                <span className="text-white text-sm font-semibold">
+                                  {(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* Online Indicator */}
+                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{user.displayName || 'User'}</p>
+                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                      </div>
                     </div>
                     <Button variant="outline" className="w-full" onClick={handleSignOut}>
                       <LogOut className="h-4 w-4 mr-2" />

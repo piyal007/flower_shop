@@ -2,9 +2,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import Swal from "sweetalert2";
+import { Separator } from "@/components/ui/separator"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const [displayName, setDisplayName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const { signIn, signUp, signInWithGoogle, user } = useAuth();
   const router = useRouter();
@@ -23,9 +25,9 @@ export default function LoginPage() {
         title: 'Welcome!',
         text: `Hi ${userInfo?.displayName || userInfo?.email || 'there'}! Welcome to FlowerShop.`,
         icon: 'success',
-        confirmButtonText: 'Continue',
+        confirmButtonText: 'OK',
         confirmButtonColor: '#ed2353',
-        timer: 2500,
+        timer: 1000,
         timerProgressBar: true,
         showClass: {
           popup: 'animate__animated animate__fadeInDown'
@@ -107,9 +109,9 @@ export default function LoginPage() {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             {isSignUp ? "Create your account" : "Sign in to your account"}
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Choose your preferred authentication method
-          </p>
+          <div className="pt-2">
+          <Separator />
+          </div>
         </div>
 
         <div className="mt-8 space-y-6">
@@ -163,7 +165,7 @@ export default function LoginPage() {
                     type="text"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-[#ed2353] focus:border-[#ed2353] focus:z-10 sm:text-sm"
                     placeholder="Full Name"
                   />
                 </div>
@@ -178,23 +180,35 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-[#ed2353] focus:border-[#ed2353] focus:z-10 sm:text-sm"
                   placeholder="Email address"
                 />
               </div>
-              <div>
+              <div className="relative">
                 <label htmlFor="password" className="sr-only">Password</label>
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   autoComplete={isSignUp ? "new-password" : "current-password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="appearance-none relative block w-full px-3 py-2 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-[#ed2353] focus:border-[#ed2353] focus:z-10 sm:text-sm"
                   placeholder="Password"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -202,7 +216,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#ed2353] hover:bg-[#d91e47] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ed2353] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 {isLoading ? "Processing..." : (isSignUp ? "Create Account" : "Sign In")}
@@ -221,7 +235,7 @@ export default function LoginPage() {
                 setPassword("");
                 setDisplayName("");
               }}
-              className="text-indigo-600 hover:text-indigo-500 text-sm font-medium cursor-pointer"
+              className="text-[#ed2353] hover:text-[#d91e47] text-sm font-medium cursor-pointer"
             >
               {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
             </button>
