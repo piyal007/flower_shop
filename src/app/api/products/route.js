@@ -18,7 +18,7 @@ export async function GET() {
 export async function POST(request) {
   try {
     const body = await request.json();
-    
+
     // Basic validation
     if (!body.name || !body.description || !body.price) {
       return NextResponse.json(
