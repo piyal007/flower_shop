@@ -8,6 +8,8 @@ export const mockProducts = [
     image: "/flowers-product-1.jpg",
     category: "Rose Bouquets",
     inStock: true,
+    stock: 15,
+    createdAt: "2024-01-15T10:30:00Z",
     features: [
       "12 premium red roses",
       "Hand-tied arrangement",
@@ -23,6 +25,8 @@ export const mockProducts = [
     image: "/flowers-product-2.jpg",
     category: "Tulip Bouquets",
     inStock: true,
+    stock: 22,
+    createdAt: "2024-02-08T14:15:00Z",
     features: [
       "15 mixed color tulips",
       "Seasonal spring flowers",
@@ -38,6 +42,8 @@ export const mockProducts = [
     image: "/flowers-product-3.jpg",
     category: "Lily Arrangements",
     inStock: false,
+    stock: 0,
+    createdAt: "2024-01-22T09:45:00Z",
     features: [
       "8 white oriental lilies",
       "Sophisticated arrangement",
@@ -53,6 +59,8 @@ export const mockProducts = [
     image: "/flowers-product-4.jpg",
     category: "Sunflower Bouquets",
     inStock: true,
+    stock: 18,
+    createdAt: "2024-03-05T16:20:00Z",
     features: [
       "6 large sunflowers",
       "Rustic charm design",
@@ -68,6 +76,8 @@ export const mockProducts = [
     image: "/flowers-product-5.jpg",
     category: "Peony Arrangements",
     inStock: true,
+    stock: 8,
+    createdAt: "2024-02-14T11:00:00Z",
     features: [
       "10 pink peonies",
       "Premium luxury flowers",
@@ -83,6 +93,8 @@ export const mockProducts = [
     image: "/flowers-product-6.jpg",
     category: "Mixed Bouquets",
     inStock: true,
+    stock: 25,
+    createdAt: "2024-01-30T13:10:00Z",
     features: [
       "Variety of seasonal flowers",
       "Colorful arrangement",
@@ -98,6 +110,8 @@ export const mockProducts = [
     image: "/flowers-product-7.jpg",
     category: "Herb Bouquets",
     inStock: true,
+    stock: 12,
+    createdAt: "2024-03-12T08:25:00Z",
     features: [
       "Fresh lavender stems",
       "Natural aromatherapy",
@@ -113,6 +127,8 @@ export const mockProducts = [
     image: "/flowers-product-8.jpg",
     category: "Orchid Arrangements",
     inStock: true,
+    stock: 6,
+    createdAt: "2024-02-28T15:40:00Z",
     features: [
       "3 premium orchid stems",
       "Exotic and elegant",

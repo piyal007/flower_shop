@@ -52,28 +52,41 @@ export default function AddProductPage() {
       // Show loading toast
       const loadingToast = toast.loading("Adding product...");
 
-      // Send product data to API
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          description: formData.description,
-          price: parseFloat(formData.price),
-          category: formData.category || 'General',
-          image: formData.image || '/images/default-product.jpg',
-          features: [] // You can extend this later
-        }),
-      });
+      // Create product object
+      const productData = {
+        id: Date.now().toString(), // Simple ID generation
+        name: formData.name,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        category: formData.category || 'General',
+        image: formData.image || '/images/default-product.jpg',
+        stock: parseInt(formData.stock) || 0,
+        createdAt: new Date().toISOString(),
+        features: []
+      };
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to add product');
+      // Save to localStorage first
+      const existingProducts = JSON.parse(localStorage.getItem("products") || "[]");
+      const updatedProducts = [...existingProducts, productData];
+      localStorage.setItem("products", JSON.stringify(updatedProducts));
+
+      // Try to send to API as well (optional)
+      try {
+        const response = await fetch('/api/products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(productData),
+        });
+
+        if (response.ok) {
+          const apiProduct = await response.json();
+          console.log('Product also saved to API:', apiProduct);
+        }
+      } catch (apiError) {
+        console.log('API save failed, but product saved locally:', apiError);
       }
-
-      const newProduct = await response.json();
 
       // Dismiss loading toast and show success
       toast.dismiss(loadingToast);
@@ -89,9 +102,9 @@ export default function AddProductPage() {
         image: "",
       });
 
-      // Optional: Redirect to products page after a delay
+      // Optional: Redirect to dashboard after a delay
       setTimeout(() => {
-        router.push("/products");
+        router.push("/dashboard");
       }, 1500);
 
     } catch (error) {
