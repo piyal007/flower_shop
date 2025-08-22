@@ -1,11 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero({
   bgSrc = "/hero-bg.jpg",
   imageSrc = "/hero-model.png",
 }) {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden -mt-16 pt-16">
       <div className="absolute inset-0 -z-10">
         <Image
           src={bgSrc}
@@ -32,9 +33,9 @@ export default function Hero({
               A symbol of simple love, charity, paradise on earth, heavenly and reminder of the passion life.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-center">
-              <a href="#shop" className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground px-6 py-3 text-sm font-medium hover:bg-primary/90">
+              <Link href="/products" className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground px-6 py-3 text-sm font-medium hover:bg-primary/90 transition-colors">
                 SHOP NOW
-              </a>
+              </Link>
             </div>
           </div>
           <div className="relative h-[320px] sm:h-[420px] lg:h-[560px]">
