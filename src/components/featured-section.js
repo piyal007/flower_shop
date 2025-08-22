@@ -32,10 +32,10 @@ export default function FeaturedSection() {
   return (
     <section className="py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto">
-          <div className="mb-2 text-primary text-lg [font-family:var(--font-great-vibes)]">Fresh flowers.</div>
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#363636]">Featured Products</h2>
-          <p className="mt-3 text-foreground/70">Discover our most popular flower arrangements</p>
+        <div className="text-center max-w-2xl mx-auto mb-12 flex flex-col items-center">
+          <div className="mb-2 text-primary text-lg [font-family:var(--font-great-vibes)] text-center">Fresh flowers.</div>
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#363636] mb-4 text-center">Featured Products</h2>
+          <p className="text-foreground/70 text-center">Discover our most popular flower arrangements</p>
         </div>
 
         {loading ? (
@@ -43,7 +43,7 @@ export default function FeaturedSection() {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ed2353]"></div>
           </div>
         ) : (
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((p) => (
               <div key={p.id} className="rounded-lg border overflow-hidden bg-white shadow-sm flex flex-col">
                 <div className="relative aspect-[1/1] bg-gray-50">

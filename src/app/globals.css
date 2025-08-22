@@ -119,4 +119,14 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
+  
+  /* Ensure perfect centering for navigation and content */
+  .text-center {
+    text-align: center !important;
+  }
+  
+  /* Fix any potential layout shifts */
+  html {
+    scroll-behavior: smooth;
+  }
 }

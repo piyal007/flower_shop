@@ -42,9 +42,9 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white/80 border-b">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1">
             <Link href="/" className="flex items-center gap-2 group" onClick={() => setOpen(false)}>
               {/* Flower Icon */}
               <div className="relative">
@@ -61,7 +61,7 @@ export default function Navbar() {
               </span>
             </Link>
           </div>
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center justify-center gap-8 flex-1">
             <Link
               href="/"
               className={cn(
@@ -92,7 +92,7 @@ export default function Navbar() {
               </Link>
             )}
           </nav>
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3 flex-1 justify-end">
             {loading ? (
               <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"></div>
             ) : user ? (
