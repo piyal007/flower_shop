@@ -32,10 +32,7 @@ export default function Hero({
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-center">
               <a href="#shop" className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground px-6 py-3 text-sm font-medium hover:bg-primary/90">
-                TO SHOP
-              </a>
-              <a href="#more" className="inline-flex items-center justify-center rounded-full border border-input bg-background text-foreground px-6 py-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-                VIEW MORE
+                SHOP NOW
               </a>
             </div>
           </div>
