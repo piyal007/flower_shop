@@ -84,7 +84,7 @@ export default function DashboardPage() {
       // Show info message that API products can't be deleted
       Swal.fire({
         title: 'Cannot Delete',
-        text: 'This is a demo product and cannot be deleted. You can only delete products you\'ve added.',
+        text: 'This is a demo product and cannot be deleted. You can only delete products you&apos;ve added.',
         icon: 'info',
         confirmButtonColor: '#3b82f6',
         confirmButtonText: 'OK'
@@ -234,7 +234,7 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          Added "{product.name}"
+                          Added &quot;{product.name}&quot;
                         </p>
                         <p className="text-xs text-gray-500">
                           {product.createdAt ? new Date(product.createdAt).toLocaleDateString() : 'Recently'}
