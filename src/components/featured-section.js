@@ -4,7 +4,7 @@ function ProductCard({ src, title = "Tulip Bouquet", price = "$49.00" }) {
   return (
     <div className="group rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
       <div className="relative aspect-[3/4] w-full">
-        <Image src={src} alt={title} fill className="object-cover" />
+        <Image src={src} alt={title} fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
       </div>
       <div className="p-4 text-center">
         <h3 className="text-base font-medium text-foreground/90 group-hover:text-foreground">{title}</h3>

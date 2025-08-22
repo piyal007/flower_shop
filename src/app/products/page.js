@@ -72,7 +72,13 @@ export default function ProductsPage() {
         {items.map((p) => (
           <div key={p.id} className="rounded-lg border overflow-hidden">
             <div className="relative aspect-[3/4]">
-              <Image src={p.image} alt={p.name} fill className="object-cover" />
+              <Image
+                src={p.image}
+                alt={p.name}
+                fill
+                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                className="object-cover"
+              />
             </div>
             <div className="p-4 space-y-1">
               <h3 className="text-base font-semibold">{p.name}</h3>

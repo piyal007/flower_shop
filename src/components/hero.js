@@ -11,6 +11,7 @@ export default function Hero({
           src={bgSrc}
           alt="Background"
           fill
+          sizes="100vw"
           priority
           className="object-cover"
         />
@@ -20,7 +21,7 @@ export default function Hero({
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8">
           <div className="text-center lg:text-center">
             <div className="flex justify-center lg:justify-center py-6">
-              <Image src="/flowers-slider-txt-element.jpg.png.webp" alt="Flower" width={72} height={48} />
+              <Image src="/flowers-slider-txt-element.jpg.png.webp" alt="Flower" width={72} height={48} style={{ height: "auto", width: "auto" }} />
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl leading-tight mb-4 text-[#93646a] [font-family:var(--font-great-vibes)]">
               Fresh Tulips
@@ -41,6 +42,7 @@ export default function Hero({
               src={imageSrc}
               alt="Hero"
               fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
               priority
               className="object-contain"
             />
