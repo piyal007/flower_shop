@@ -5,7 +5,7 @@ export default function NotFound() {
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-20 text-center">
       <h1 className="text-4xl font-bold text-foreground mb-4">Product Not Found</h1>
       <p className="text-foreground/70 mb-8">
-        Sorry, the product you're looking for doesn't exist or may have been removed.
+        Sorry, the product you&apos;re looking for doesn&apos;t exist or may have been removed.
       </p>
       <div className="flex gap-4 justify-center">
         <Link 

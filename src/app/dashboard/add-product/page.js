@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
@@ -216,9 +217,11 @@ export default function AddProductPage() {
                       />
                       {formData.image && (
                         <div className="mt-3">
-                          <img
+                          <Image
                             src={formData.image}
                             alt="Preview"
+                            width={128}
+                            height={128}
                             className="w-32 h-32 object-cover rounded-lg border-2 border-pink-200 shadow-md"
                             onError={(e) => {
                               e.target.style.display = 'none';
